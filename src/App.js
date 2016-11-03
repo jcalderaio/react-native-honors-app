@@ -1,10 +1,10 @@
 import {
   Platform
 } from 'react-native';
-import { Navigation } from 'react-native-navigation';
+import {Navigation} from 'react-native-navigation';
 
 // screen related book keeping
-import { registerScreens } from './screens';
+import {registerScreens} from './screens';
 registerScreens();
 
 const createTabs = () => {
@@ -27,7 +27,7 @@ const createTabs = () => {
       }
     }
   ];
-
+  
   if (Platform.OS === 'android') {
     tabs.push({
       label: 'Collapsing',
