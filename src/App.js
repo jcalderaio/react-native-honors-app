@@ -48,13 +48,6 @@ Navigation.startTabBasedApp({
   tabs: createTabs()
 });
 
-/*
-,
-appStyle: {
-  tabBarBackgroundColor: '#0f2362',
-  tabBarButtonColor: '#ffffff',
-  tabBarSelectedButtonColor: '#63d7cc'
-}
 
 /*
 import React, { Component } from 'react';

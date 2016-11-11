@@ -5,17 +5,6 @@ import { styles } from '../components/common/styles';
 
 export default class ToDoScreen extends Component {
 
-  /*
-  static navigatorStyle: {
-    drawUnderTabBar: true,
-    navBarBackgroundColor: '#4dbce9',
-    navBarTextColor: '#ffff00',
-    navBarSubtitleTextColor: '#ff0000',
-    navBarButtonColor: '#ffffff',
-    statusBarTextColorScheme: 'light'
-  };
-  */
-
   constructor(props) {
     super(props);
     this.messsage = 'its working!';

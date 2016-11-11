@@ -1,41 +1,168 @@
 import React, { Component } from 'react';
-import { Text, View } from 'react-native';
-import { Navigation } from 'react-native-navigation';
+import { StyleSheet, Image, Text, View } from 'react-native';
+import { FBLogin } from 'react-native-facebook-login';
 import { styles } from '../components/common/styles';
 
-export default class ProfileScreen extends Component {
+var FB_PHOTO_WIDTH = 200;
 
-  /*
-  static navigatorStyle = {
-    navBarBackgroundColor: '#4dbce9',
-    navBarTextColor: '#ffff00',
-    navBarSubtitleTextColor: '#ff0000',
-    navBarButtonColor: '#ffffff',
-    statusBarTextColorScheme: 'light',
-    tabBarBackgroundColor: '#4dbce9',
-    tabBarButtonColor: '#ffffff',
-    tabBarSelectedButtonColor: '#ffff00'
-  };
-  */
+//Combines exporting a Class and making a Class
+export default class ProfileScreen extends Component {
 
   constructor(props) {
     super(props);
-    // if you want to listen on navigator events, set this up
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+    this.state = {
+      user: null
+    };
   }
-
-  onNavigatorEvent(event) {
-
-  }
-
 
   render() {
+    var _this = this;
+    var user = this.state.user;
+
     return (
-      <View style={{ flex: 1 }}>
-        <View style={styles.containerCenter}>
-          <Text> This is screen one </Text>
-        </View>
+      <View style={styles.loginContainer}>
+
+        { user && <Photo user={user} /> }
+        { user && <Info user={user} /> }
+
+        <FBLogin style={{ marginBottom: 10, }}
+          permissions={["email","user_friends"]}
+          onLogin={function(data){
+            console.log("Logged in!");
+            console.log(data);
+            _this.setState({ user : data.credentials });
+          }}
+          onLogout={function(){
+            console.log("Logged out.");
+            _this.setState({ user : null });
+          }}
+          onLoginFound={function(data){
+            console.log("Existing login found.");
+            console.log(data);
+            _this.setState({ user : data.credentials });
+          }}
+          onLoginNotFound={function(){
+            console.log("No user logged in.");
+            _this.setState({ user : null });
+          }}
+          onError={function(data){
+            console.log("ERROR");
+            console.log(data);
+          }}
+          onCancel={function(){
+            console.log("User cancelled.");
+          }}
+          onPermissionsMissing={function(data){
+            console.log("Check permissions!");
+            console.log(data);
+          }}
+        />
       </View>
     );
   }
+};
+
+class Photo extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      photo: null
+    };
+  }
+
+  componentWillMount() {
+    var _this = this;
+    var user = this.props.user;
+    var api = `https://graph.facebook.com/v2.3/${user.userId}/picture?width=${FB_PHOTO_WIDTH}&redirect=false&access_token=${user.token}`;
+
+    fetch(api)
+      .then((response) => response.json())
+      .then((responseData) => {
+        _this.setState({
+          photo : {
+            url : responseData.data.url,
+            height: responseData.data.height,
+            width: responseData.data.width,
+          },
+        });
+      })
+      .done();
+  }
+
+  renderLoading() {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  render() {
+    if (this.state.photo == null) return this.renderLoading();
+
+    var photo = this.state.photo;
+
+    return (
+      <View style={styles.bottomBump}>
+
+        <Image
+          style={photo &&
+            {
+              height: photo.height,
+              width: photo.width,
+            }
+          }
+          source={{ uri: photo && photo.url }}
+        />
+      </View>
+    );
+  }
+
 }
+
+Photo.propTypes = {
+  user: React.PropTypes.object.isRequired
+};
+
+var Info = React.createClass({
+  propTypes: {
+    user: React.PropTypes.object.isRequired,
+  },
+
+  getInitialState: function(){
+    return {
+      info: null,
+    };
+  },
+
+  componentWillMount: function(){
+    var _this = this;
+    var user = this.props.user;
+    var api = `https://graph.facebook.com/v2.3/${user.userId}?fields=name,email&access_token=${user.token}`;
+
+    fetch(api)
+      .then((response) => response.json())
+      .then((responseData) => {
+        _this.setState({
+          info : {
+            name : responseData.name,
+            email: responseData.email,
+          },
+        });
+      })
+      .done();
+  },
+
+  render: function(){
+    var info = this.state.info;
+
+    return (
+      <View style={styles.bottomBump}>
+        {/* <Text>{ info && this.props.user.userId }</Text> */}
+        <Text>{ info && info.name }</Text>
+        <Text>{ info && info.email }</Text>
+      </View>
+    );
+  }
+});
