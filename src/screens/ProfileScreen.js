@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { StyleSheet, Image, Text, View } from 'react-native';
 import { FBLogin } from 'react-native-facebook-login';
 import { styles } from '../components/common/styles';
@@ -16,53 +16,59 @@ export default class ProfileScreen extends Component {
   }
 
   render() {
-    var _this = this;
     var user = this.state.user;
 
     return (
-      <View style={styles.loginContainer}>
+      <View style={{ backgroundColor: '#4099FF', flex: 1 }}>
+        <View style={styles.containerCenter}>
 
-        { user && <Photo user={user} /> }
-        { user && <Info user={user} /> }
+          { user && <Photo user={user} /> }
+          { user && <Info user={user} /> }
 
-        <FBLogin style={{ marginBottom: 10, }}
-          permissions={["email","user_friends"]}
-          onLogin={function(data){
-            console.log("Logged in!");
-            console.log(data);
-            _this.setState({ user : data.credentials });
-          }}
-          onLogout={function(){
-            console.log("Logged out.");
-            _this.setState({ user : null });
-          }}
-          onLoginFound={function(data){
-            console.log("Existing login found.");
-            console.log(data);
-            _this.setState({ user : data.credentials });
-          }}
-          onLoginNotFound={function(){
-            console.log("No user logged in.");
-            _this.setState({ user : null });
-          }}
-          onError={function(data){
-            console.log("ERROR");
-            console.log(data);
-          }}
-          onCancel={function(){
-            console.log("User cancelled.");
-          }}
-          onPermissionsMissing={function(data){
-            console.log("Check permissions!");
-            console.log(data);
-          }}
-        />
+          <FBLogin
+            style={{ marginBottom: 10, }}
+            permissions={['email', 'user_friends']}
+            onLogin={(data) => {
+              console.log('Logged in!');
+              console.log(data);
+              this.setState({ user: data.credentials });
+            }}
+            onLogout={() => {
+              console.log('Logged out.');
+              this.setState({ user: null });
+            }}
+            onLoginFound={(data) => {
+              console.log('Existing login found.');
+              console.log(data);
+              this.setState({ user: data.credentials });
+            }}
+            onLoginNotFound={() => {
+              console.log('No user logged in.');
+              this.setState({ user: null });
+            }}
+            onError={(data) => {
+              console.log('ERROR');
+              console.log(data);
+            }}
+            onCancel={() => {
+              console.log('User cancelled.');
+            }}
+            onPermissionsMissing={(data) => {
+              console.log('Check permissions!');
+              console.log(data);
+            }}
+          />
+        </View>
       </View>
     );
   }
-};
+}
 
 class Photo extends Component {
+
+  static propTypes = {
+    user: PropTypes.object.isRequired
+  }
 
   constructor(props) {
     super(props);
@@ -72,14 +78,13 @@ class Photo extends Component {
   }
 
   componentWillMount() {
-    var _this = this;
     var user = this.props.user;
     var api = `https://graph.facebook.com/v2.3/${user.userId}/picture?width=${FB_PHOTO_WIDTH}&redirect=false&access_token=${user.token}`;
 
     fetch(api)
       .then((response) => response.json())
       .then((responseData) => {
-        _this.setState({
+        this.setState({
           photo : {
             url : responseData.data.url,
             height: responseData.data.height,
@@ -121,40 +126,37 @@ class Photo extends Component {
 
 }
 
-Photo.propTypes = {
-  user: React.PropTypes.object.isRequired
-};
+class Info extends Component {
 
-var Info = React.createClass({
-  propTypes: {
+  static propTypes: {
     user: React.PropTypes.object.isRequired,
-  },
+  }
 
-  getInitialState: function(){
-    return {
-      info: null,
+  constructor(props) {
+    super(props);
+    this.state = {
+      info: null
     };
-  },
+  }
 
-  componentWillMount: function(){
-    var _this = this;
+  componentWillMount() {
     var user = this.props.user;
     var api = `https://graph.facebook.com/v2.3/${user.userId}?fields=name,email&access_token=${user.token}`;
 
     fetch(api)
       .then((response) => response.json())
       .then((responseData) => {
-        _this.setState({
-          info : {
-            name : responseData.name,
+        this.setState({
+          info: {
+            name: responseData.name,
             email: responseData.email,
           },
         });
       })
       .done();
-  },
+  }
 
-  render: function(){
+  render() {
     var info = this.state.info;
 
     return (
@@ -165,4 +167,5 @@ var Info = React.createClass({
       </View>
     );
   }
-});
+
+}
