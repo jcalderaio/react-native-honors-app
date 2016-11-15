@@ -12,7 +12,10 @@
     "react-native": "0.36.0",
     "react-native-facebook-login": "^1.4.0",
     "react-native-fbsdk": "^0.3.0",
-    "react-native-navigation": "^2.0.0-experimental.136"
+    "react-native-navigation": "^2.0.0-experimental.136",
+    "react-native-swipeout": "^2.0.12",
+    "react-native-swiper": "^1.5.3",
+    "react-native-vector-icons": "^3.0.0"
   },
   "jest": {
     "preset": "jest-react-native"

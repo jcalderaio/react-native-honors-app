@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableHighlight, TextInput, ListView } from 'react-native';
-import Firebase from 'firebase';
-import { Navigation } from 'react-native-navigation';
-
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
@@ -28,20 +25,38 @@ export default class ToDoScreen extends Component {
     }
   }
 
-  _renderRow(rowData) {
-  	return (<View
-              style={{
-                height: 55,
-                borderBottomColor: '#ededed',
-                borderBottomWidth: 1,
-                paddingLeft: 10,
-                paddingTop: 10 }}
-            >
-            <Text style={{ fontSize: 16 }}>
-              {rowData}
-            </Text>
-            </View>
-          );
+  deleteRow(rowData) {
+    for (var i = this.state.items.length - 1; i >= 0; i--) {
+      if (this.state.items[i] === rowData) {
+         this.state.items.splice(i, 1);
+         break;
+      }
+    }
+    this.setState({
+      dataSource: ds.cloneWithRows(this.state.items)
+    });
+  }
+
+  renderRow(rowData) {
+  	return (
+      <TouchableHighlight
+        underlayColor='#dddddd'
+        onPress={() => this.deleteRow(rowData)}
+      >
+        <View
+          style={{
+            height: 45,
+            borderBottomColor: '#ededed',
+            borderBottomWidth: 1,
+            paddingLeft: 10,
+            paddingTop: 10 }}
+        >
+        <Text style={{ fontSize: 16 }}>
+          {rowData}
+        </Text>
+        </View>
+      </TouchableHighlight>
+    );
   }
 
   render() {
@@ -62,8 +77,9 @@ export default class ToDoScreen extends Component {
         </TouchableHighlight>
       </View>
       	<ListView
-      dataSource={this.state.dataSource}
-      renderRow={this._renderRow}
+            dataSource={this.state.dataSource}
+            renderRow={(rowData) => this.renderRow(rowData)}
+            enableEmptySections={true}
        />
     </View>
   );
@@ -84,8 +100,7 @@ const styles = {
     color: 'steelblue',
     marginTop: 6,
     marginRight: 25,
-    marginLeft: 20,
-
+    marginLeft: 25
   },
   input: {
     height: 36,
@@ -110,54 +125,3 @@ const styles = {
     flex: 1,
   }
 };
-
-/*
-import React, { Component } from 'react';
-import { Text, View, TouchableHighlight, TextInput, ListView } from 'react-native';
-import Firebase from 'firebase';
-import { Navigation } from 'react-native-navigation';
-import { styles } from '../components/common/styles';
-import { CardSection, Button } from '../components/common';
-
-export default class ToDoScreen extends Component {
-
-  constructor(props) {
-    super(props);
-    //const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.state = {
-      message: 'its working',
-      dataSource: ['fucker', 'bitch']
-    };
-  }
-
-  render() {
-      return (
-        <View style={{ flex: 1 }}>
-          <View style={styles.containerCenter}>
-            <TextInput
-              style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-              onChangeText={(text) => this.setState({ text })}
-              value={this.state.text}
-            />
-           <Text>{this.state.text}</Text>
-           <CardSection>
-             <Button
-               onPress={() => {
-                 var ds = this.state.dataSource;
-                 ds.push(this.state.text);
-                 alert(ds[ds.size - 1]);
-
-               }}
-
-             >
-               Add Item
-             </Button>
-           </CardSection>
-
-
-          </View>
-        </View>
-      );
-  }
-}
-*/

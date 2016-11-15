@@ -28,7 +28,30 @@ const createTabs = () => {
         navBarBackgroundColor: '#415DAE',
         navBarTextColor: '#fff'
       }
+    },
+    {
+      label: 'PageViewScreen',
+      screen: 'PageViewScreen',
+      icon: require('../img/scene.png'),
+      selectedIcon: require('../img/scene_selected.png'),
+      title: 'Page View Controller',
+      navigatorStyle: {
+        navBarBackgroundColor: '#415DAE',
+        navBarTextColor: '#fff'
+      }
+    },
+    {
+      label: 'MapScreen',
+      screen: 'MapScreen',
+      icon: require('../img/map.png'),
+      selectedIcon: require('../img/map_selected.png'),
+      title: 'Maps',
+      navigatorStyle: {
+        navBarBackgroundColor: '#415DAE',
+        navBarTextColor: '#fff'
+      }
     }
+
   ];
 
 /*
