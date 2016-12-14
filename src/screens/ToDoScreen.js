@@ -63,10 +63,11 @@ export default class ToDoScreen extends Component {
     return (
     <View style={styles.appContainer}>
       <View style={styles.inputcontainer}>
-        <TextInput style={styles.input}
-                   onChangeText={(text) => this.setState({newTodo: text})}
-                   value={this.state.newTodo}
-                   placeholder='+ Add Task'
+        <TextInput
+          style={styles.input}
+          onChangeText={(text) => this.setState({ newTodo: text })}
+          value={this.state.newTodo}
+          placeholder='+ Add Task'
         />
         <TouchableHighlight
           style={styles.button}
@@ -76,15 +77,20 @@ export default class ToDoScreen extends Component {
           <Text style={styles.btnText}>Add</Text>
         </TouchableHighlight>
       </View>
-      	<ListView
-            dataSource={this.state.dataSource}
-            renderRow={(rowData) => this.renderRow(rowData)}
-            enableEmptySections={true}
-       />
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={(rowData) => this.renderRow(rowData)}
+        enableEmptySections={true}
+      />
+      <View style={{ flex: 1 }}>
+        <View style={styles.footer}>
+          <Text style={{ fontSize: 16, color: 'red' }}>Click on task to delete</Text>
+        </View>
+      </View>
     </View>
   );
   }
-};
+}
 
 const styles = {
   appContainer: {
@@ -123,5 +129,12 @@ const styles = {
   },
   todoText: {
     flex: 1,
+  },
+  footer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 20,
+    alignItems: 'center'
   }
 };
