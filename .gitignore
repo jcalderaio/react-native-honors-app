@@ -20,7 +20,6 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-project.xcworkspace
 
 # Android/IJ
 #
@@ -30,9 +29,6 @@ project.xcworkspace
 local.properties
 
 # node.js
-#
-node_modules/
-npm-debug.log
 
 # BUCK
 buck-out/
