@@ -1,1 +1,1 @@
-# react-native-honors-app
+# reactNativeHonorsApp
